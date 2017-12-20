@@ -1,5 +1,6 @@
 #!/usr/bin/python3.6
 import pygame
+import time
 
 pygame.init()
 
@@ -11,6 +12,8 @@ white = (255, 255, 255)
 gray = (171, 171, 171)
 red = (255, 0, 0)
 
+car_width=150
+
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('A Bit Racey')
 clock = pygame.time.Clock()
@@ -20,35 +23,65 @@ carImg = pygame.image.load('white-car.png')
 def car(x,y):
     gameDisplay.blit(carImg,(x,y))
 
+def text_objects(text, font):
+    textSurface = font.render(text, True, red)
+    return textSurface, textSurface.get_rect()
 
-x = (display_width * 0.40)
-y = (display_height * 0.6)
-x_change = 0
+def message_display(text):
+    largeText = pygame.font.SysFont('sans', 115)
+    TextSurf, TextRect = text_objects(text, largeText)
+    TextRect.center = ((display_width/2), (display_height/2))
+    gameDisplay.blit(TextSurf, TextRect)
 
-crashed = False
-
-while not crashed:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            crashed = True
-
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                x_change = -5
-            elif event.key == pygame.K_RIGHT:
-                x_change = 5
-
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                x_change = 0
-
-    x += x_change
-
-
-        # print(event)
-    gameDisplay.fill(gray)
-    car(x,y)
     pygame.display.update()
-    clock.tick(60)
+
+    time.sleep(2)
+
+    game_loop()
+
+def crash():
+    message_display('You Crashed!')
+
+def game_loop():
+
+    x = (display_width * 0.40)
+    y = (display_height * 0.6)
+    x_change = 0
+
+    gameExit = False
+
+    while not gameExit:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                # gameExit = True
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    x_change = -5
+                # elif event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT:
+                    x_change = 5
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    x_change = 0
+
+
+        x += x_change
+
+
+            # print(event)
+        gameDisplay.fill(gray)
+        car(x,y)
+
+        if x > display_width - car_width or x < 0:
+            crash()
+
+        pygame.display.update()
+        clock.tick(60)
+
+game_loop()
 pygame.quit()
 quit()
