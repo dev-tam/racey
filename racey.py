@@ -13,7 +13,7 @@ white = (255, 255, 255)
 gray = (171, 171, 171)
 red = (255, 0, 0)
 
-car_width=150
+car_width=64
 
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('A Bit Racey')
@@ -96,6 +96,13 @@ def game_loop():
         if thing_starty > display_height:
             thing_starty = 0 - thing_height
             thing_startx = random.randrange(0,display_width)
+
+        if y < thing_starty+thing_height:
+            print('y crossover')
+
+            if x > thing_startx and x < thing_startx + thing_width or x + car_width > thing_startx and x + car_width < thing_startx + thing_width:
+                print('x crossover')
+                crash()
 
         pygame.display.update()
         clock.tick(60)
